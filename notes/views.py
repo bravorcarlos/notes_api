@@ -9,7 +9,10 @@ class NoteAPIModelViewSet(ModelViewSet):
     serializer_class = NoteSerializer
     
     def get_queryset(self):
-        return Note.objects.filter(user=self.request.user)
+        if self.request.user.is_authenticated:
+            return Note.objects.filter(user=self.request.user)
+        else:
+            return Note.objects.none()
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
